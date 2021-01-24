@@ -1,0 +1,10 @@
+source: website
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: base
+
+GITHUB_CLIENT_ID: f0027cd1e5607d764686
+GITHUB_REPOSITORY: altbdoor/trainstream.github.io

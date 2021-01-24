@@ -1,0 +1,52 @@
+<div class="container py-3" ng-controller="EditController as vm">
+    <div class="d-flex justify-content-end mb-3">
+        <button type="button" class="btn btn-secondary mr-2">New Image</button>
+        <button type="button" class="btn btn-primary">New Entry</button>
+    </div>
+
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th style="white-space: nowrap;">Is Alive?</th>
+                <th>Tags</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="stream in vm.streamList track by $index">
+                <td>
+                    <div>
+                        [[ stream.name ]]
+                    </div>
+                    <div class="d-flex mt-1">
+                        <a
+                            ng-repeat="img in stream.images track by $index"
+                            ng-href="https://github.com/[[ vm.repository ]]/blob/master[[ img.src ]]"
+                            ng-attr-title="[[ img.title ]]"
+                            target="_blank"
+                            class="mr-1"
+                        >
+                            <img ng-src="https://cdn.jsdelivr.net/gh/[[ vm.repository ]][[ img.src ]]" height="64">
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <span ng-show="stream.isAlive" class="badge badge-success">Yes</span>
+                    <span ng-show="!stream.isAlive" class="badge badge-danger">No</span>
+                </td>
+                <td>
+                    <span
+                        class="badge badge-secondary mr-1"
+                        ng-repeat="tag in stream.tags.split(',') track by $index"
+                    >
+                        [[ tag ]]
+                    </span>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary">Edit</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

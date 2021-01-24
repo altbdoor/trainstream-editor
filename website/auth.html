@@ -1,0 +1,59 @@
+---
+---
+
+<div class="container py-3">
+    <div class="auth__loading text-center d-none">
+        <h3>Authenticating...</h3>
+        <p>
+            Getting access token from GitHub... You will be redirected when it
+            is done.
+        </p>
+    </div>
+
+    <div class="auth__error d-none">
+        <div class="text-center">
+            <h3>Error</h3>
+            <p>
+                An error has occured during authentication! Please click
+                <a href="./">here</a> to try again.
+            </p>
+        </div>
+        <pre><code class="auth__error__content"></code></pre>
+    </div>
+
+    <div class="auth__default text-center">
+        <h3>You should not be here!</h3>
+        <p>Please click <a href="./">here</a> to begin.</p>
+    </div>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has('code')) {
+        document.querySelector('.auth__default').classList.add('d-none');
+        document.querySelector('.auth__loading').classList.remove('d-none');
+
+        const url = new URL(
+            'https://trainstream-editor.altbdoor-ed95b916.workers.dev'
+        );
+        url.searchParams.set('code', params.get('code'));
+        url.searchParams.set('client_id', '{{ site.GITHUB_CLIENT_ID }}');
+
+        fetch(url.toString())
+            .then((data) => data.json())
+            .then((data) => {
+                if (data.access_token) {
+                    localStorage.setItem('gh-token', data.access_token);
+
+                    setTimeout(() => {
+                        window.location.href = './';
+                    }, 2000);
+                } else {
+                    document.querySelector('.auth__loading').classList.add('d-none');
+                    document.querySelector('.auth__error').classList.remove('d-none');
+                    document.querySelector('.auth__error__content').textContent = JSON.stringify(data, null, 4);
+                }
+            });
+    }
+</script>
