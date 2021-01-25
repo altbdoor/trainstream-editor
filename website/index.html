@@ -1,12 +1,13 @@
 ---
 ---
 
-<div ng-app="editApp" ng-controller="MainController as vm">
-    <div ng-if="!vm.isLoggedIn" ng-include="'assets/template/sign-in.html'"></div>
-    <div ng-if="vm.isLoggedIn" ng-include="'assets/template/editor.html'"></div>
+<div ng-app="editApp">
+    <div ng-if="!$root.hasToken" ng-include="'assets/template/sign-in.html'"></div>
+    <div ng-if="$root.hasToken" ng-include="'assets/template/editor.html'"></div>
 </div>
 
-<script src="assets/main.js"></script>
+<script src="assets/js/editor.js"></script>
+<script src="assets/js/main.js"></script>
 
 <script>
     // const token = localStorage.getItem('gh-token');
