@@ -1,0 +1,110 @@
+<form>
+    <div class="modal-header">
+        <h5 class="modal-title">
+            <span ng-if="!vm.isEdit">New stream</span>
+            <span ng-if="vm.isEdit">Edit stream</span>
+        </h5>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="">Name</label>
+            <input type="text" class="form-control" ng-model="vm.entry.name" />
+        </div>
+        <div class="form-group">
+            <label for="">Is alive?</label>
+            <select class="form-control" ng-model="vm.entry.isAlive">
+                <option ng-value="true">Yes</option>
+                <option ng-value="false">No</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="">Tags</label>
+            <input type="text" class="form-control" ng-model="vm.entry.tags" />
+            <small class="form-text text-muted">Comma-separated list</small>
+        </div>
+
+        <datalist id="image-suggest">
+            <option ng-repeat="item in vm.pictureSuggestions" value="[[ item ]]"></option>
+        </datalist>
+
+        <table class="table table-sm mt-4">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Image source</th>
+                    <th>Alt text</th>
+                    <th>Width</th>
+                    <th>Height</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="img in vm.entry.images track by $index">
+                    <td class="align-middle">[[ $index + 1 ]]</td>
+                    <td>
+                        <input type="text" class="form-control" list="image-suggest" ng-model="img.src" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="img.alt" />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" ng-model="img.width" />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" ng-model="img.height" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger">&times;</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" class="text-right">
+                        <button type="button" class="btn btn-outline-secondary">Add image</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <table class="table table-sm mt-4">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Link URL</th>
+                    <th>Link title</th>
+                    <th>Text</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="ext in vm.entry.extras track by $index">
+                    <td class="align-middle">[[ $index + 1 ]]</td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="ext.link" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="ext.linkTitle" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="ext.text" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger">&times;</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" class="text-right">
+                        <button type="button" class="btn btn-outline-secondary">Add extra</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save to memory</button>
+        <button type="button" class="btn btn-outline-secondary" ng-click="$dismiss()">Cancel</button>
+    </div>
+</form>

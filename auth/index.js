@@ -34,14 +34,11 @@ async function handleRequest(req) {
     oauthData.append('client_secret', GITHUB_CLIENT_SECRET);
 
     try {
-        const tokenData = await fetch(
-            'https://github.com/login/oauth/access_token',
-            {
-                method: 'POST',
-                body: oauthData,
-                headers: { Accept: 'application/json' },
-            }
-        ).then((data) => data.text());
+        const tokenData = await fetch('https://github.com/login/oauth/access_token', {
+            method: 'POST',
+            body: oauthData,
+            headers: { Accept: 'application/json' },
+        }).then((data) => data.text());
 
         return new Response(tokenData, {
             headers: {

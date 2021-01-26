@@ -1,21 +1,22 @@
 <div class="container py-3" ng-controller="EditController as vm">
     <div class="text-right mb-3">
         <a
-            class="btn btn-secondary"
+            class="btn btn-outline-secondary"
             ng-href="https://github.com/[[ $root.repository ]]/upload/master/pictures"
             target="_blank"
         >
             Upload image
         </a>
-        <button type="button" class="btn btn-secondary" ng-click="vm.reloadStreams()">Reload entries</button>
-        <button type="button" class="btn btn-primary" ng-click="vm.openEditor()">New entry</button>
+        <button type="button" class="btn btn-outline-secondary" ng-click="vm.reloadStreams()">Reload entries</button>
+        <button type="button" class="btn btn-secondary" ng-click="vm.openEditor()">Add new stream</button>
+        <button type="button" class="btn btn-primary">Save changes to GitHub</button>
     </div>
 
     <table class="table table-sm table-bordered table-striped">
         <thead>
             <tr>
                 <th>Name</th>
-                <th style="white-space: nowrap;">Is Alive?</th>
+                <th style="white-space: nowrap">Is Alive?</th>
                 <th>Tags</th>
                 <th></th>
             </tr>
@@ -23,9 +24,7 @@
         <tbody>
             <tr ng-repeat="stream in vm.streamList track by $index">
                 <td>
-                    <div>
-                        [[ stream.name ]]
-                    </div>
+                    <div>[[ stream.name ]]</div>
                     <div class="d-flex">
                         <a
                             ng-repeat="img in stream.images track by $index"
@@ -34,7 +33,10 @@
                             target="_blank"
                             class="mr-1 mt-1"
                         >
-                            <img ng-src="//images.weserv.nl/?h=64&url=https://cdn.jsdelivr.net/gh/[[ $root.repository ]][[ img.src ]]" height="64">
+                            <img
+                                ng-src="//images.weserv.nl/?h=64&url=https://cdn.jsdelivr.net/gh/[[ $root.repository ]][[ img.src ]]"
+                                height="64"
+                            />
                         </a>
                     </div>
                 </td>
@@ -43,15 +45,12 @@
                     <span ng-show="!stream.isAlive" class="badge badge-danger">No</span>
                 </td>
                 <td>
-                    <span
-                        class="badge badge-secondary mr-1"
-                        ng-repeat="tag in stream.tags.split(',') track by $index"
-                    >
+                    <span class="badge badge-secondary mr-1" ng-repeat="tag in stream.tags.split(',') track by $index">
                         [[ tag ]]
                     </span>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-primary" ng-click="vm.openEditor(stream)">Edit</button>
+                    <button type="button" class="btn btn-primary" ng-click="vm.openEditor(stream, $index)">Edit</button>
                 </td>
             </tr>
         </tbody>

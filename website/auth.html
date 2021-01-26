@@ -4,10 +4,7 @@
 <div class="container py-3">
     <div class="auth__loading text-center d-none">
         <h3>Authenticating...</h3>
-        <p>
-            Getting access token from GitHub... You will be redirected when it
-            is done.
-        </p>
+        <p>Getting access token from GitHub... You will be redirected when it is done.</p>
     </div>
 
     <div class="auth__error d-none">
@@ -34,9 +31,7 @@
         document.querySelector('.auth__default').classList.add('d-none');
         document.querySelector('.auth__loading').classList.remove('d-none');
 
-        const url = new URL(
-            'https://trainstream-editor.altbdoor-ed95b916.workers.dev'
-        );
+        const url = new URL('https://trainstream-editor.altbdoor-ed95b916.workers.dev');
         url.searchParams.set('code', params.get('code'));
         url.searchParams.set('client_id', '{{ site.GITHUB_CLIENT_ID }}');
 
