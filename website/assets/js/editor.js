@@ -5,18 +5,24 @@ function EditController($http, $rootScope, $uibModal) {
     vm.reloadStreams = reloadStreams;
     vm.openEditor = openEditor;
 
-    function openEditor(entry, index) {
+    function openEditor(editStream, editStreamIndex) {
         $uibModal
             .open({
-                controller: 'EntryController',
+                controller: 'StreamController',
                 controllerAs: 'vm',
                 templateUrl: 'assets/template/stream-edit.html',
                 size: 'lg',
-                resolve: { entry: angular.copy(entry) },
+                resolve: { stream: angular.copy(editStream) },
             })
             .result.then(
-                () => {
-                    console.log('closed');
+                (newStream) => {
+                    if (editStreamIndex !== -1) {
+                        vm.streamList = vm.streamList.map((stream, index) =>
+                            index === editStreamIndex ? newStream : stream
+                        );
+                    } else {
+                        vm.streamList = [newStream, ...vm.streamList];
+                    }
                 },
                 () => {}
             );
@@ -32,9 +38,9 @@ function EditController($http, $rootScope, $uibModal) {
     reloadStreams();
 }
 
-function EntryController(entry, $http, $rootScope) {
+function StreamController(stream, $http, $rootScope, $scope) {
     const vm = this;
-    vm.isEdit = !!entry;
+    vm.isEdit = !!stream;
 
     vm.pictureSuggestions = [];
     $http
@@ -45,5 +51,40 @@ function EntryController(entry, $http, $rootScope) {
             vm.pictureSuggestions = data.data.map((item) => `/${item.path}`);
         });
 
-    vm.entry = entry || {};
+    vm.stream = stream || {
+        isAlive: true,
+        images: [],
+        extras: [],
+    };
+
+    vm.addImage = addImage;
+    vm.removeImage = removeImage;
+    vm.addExtra = addExtra;
+    vm.removeExtra = removeExtra;
+
+    vm.saveStream = saveStream;
+
+    function saveStream(form, stream) {
+        if (form.$invalid) {
+            return;
+        }
+
+        $scope.$close(stream);
+    }
+
+    function addImage() {
+        vm.stream.images = [...vm.stream.images, { src: '', alt: '', width: 0, height: 0 }];
+    }
+
+    function removeImage(removedIndex) {
+        vm.stream.images = vm.stream.images.filter((_, index) => index !== removedIndex);
+    }
+
+    function addExtra() {
+        vm.stream.extras = [...vm.stream.extras, { link: '', linkTitle: '', text: '' }];
+    }
+
+    function removeExtra(removedIndex) {
+        vm.stream.extras = vm.stream.extras.filter((_, index) => index !== removedIndex);
+    }
 }

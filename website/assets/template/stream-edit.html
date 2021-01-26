@@ -1,4 +1,4 @@
-<form>
+<form name="streamForm" ng-submit="vm.saveStream(streamForm, vm.stream)">
     <div class="modal-header">
         <h5 class="modal-title">
             <span ng-if="!vm.isEdit">New stream</span>
@@ -7,61 +7,65 @@
     </div>
     <div class="modal-body">
         <div class="form-group">
-            <label for="">Name</label>
-            <input type="text" class="form-control" ng-model="vm.entry.name" />
+            <label for="">Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" ng-model="vm.stream.name" required />
         </div>
         <div class="form-group">
             <label for="">Is alive?</label>
-            <select class="form-control" ng-model="vm.entry.isAlive">
+            <select class="form-control" ng-model="vm.stream.isAlive">
                 <option ng-value="true">Yes</option>
                 <option ng-value="false">No</option>
             </select>
         </div>
         <div class="form-group">
             <label for="">Tags</label>
-            <input type="text" class="form-control" ng-model="vm.entry.tags" />
+            <input type="text" class="form-control" ng-model="vm.stream.tags" />
             <small class="form-text text-muted">Comma-separated list</small>
         </div>
 
         <datalist id="image-suggest">
-            <option ng-repeat="item in vm.pictureSuggestions" value="[[ item ]]"></option>
+            <option ng-repeat="item in vm.pictureSuggestions track by $index" value="[[ item ]]"></option>
         </datalist>
 
         <table class="table table-sm mt-4">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Image source</th>
+                    <th>Image source <span class="text-danger">*</span></th>
                     <th>Alt text</th>
-                    <th>Width</th>
-                    <th>Height</th>
+                    <th>Width <span class="text-danger">*</span></th>
+                    <th>Height <span class="text-danger">*</span></th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="img in vm.entry.images track by $index">
+                <tr ng-repeat="img in vm.stream.images track by $index">
                     <td class="align-middle">[[ $index + 1 ]]</td>
                     <td>
-                        <input type="text" class="form-control" list="image-suggest" ng-model="img.src" />
+                        <input type="text" class="form-control" list="image-suggest" ng-model="img.src" required />
                     </td>
                     <td>
                         <input type="text" class="form-control" ng-model="img.alt" />
                     </td>
                     <td>
-                        <input type="number" class="form-control" ng-model="img.width" />
+                        <input type="number" class="form-control" ng-model="img.width" required />
                     </td>
                     <td>
-                        <input type="number" class="form-control" ng-model="img.height" />
+                        <input type="number" class="form-control" ng-model="img.height" required />
                     </td>
                     <td>
-                        <button type="button" class="btn btn-outline-danger">&times;</button>
+                        <button type="button" class="btn btn-outline-danger" ng-click="vm.removeImage($index)">
+                            &times;
+                        </button>
                     </td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="6" class="text-right">
-                        <button type="button" class="btn btn-outline-secondary">Add image</button>
+                        <button type="button" class="btn btn-outline-secondary" ng-click="vm.addImage()">
+                            Add image
+                        </button>
                     </td>
                 </tr>
             </tfoot>
@@ -78,7 +82,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="ext in vm.entry.extras track by $index">
+                <tr ng-repeat="ext in vm.stream.extras track by $index">
                     <td class="align-middle">[[ $index + 1 ]]</td>
                     <td>
                         <input type="text" class="form-control" ng-model="ext.link" />
@@ -90,21 +94,25 @@
                         <input type="text" class="form-control" ng-model="ext.text" />
                     </td>
                     <td>
-                        <button type="button" class="btn btn-outline-danger">&times;</button>
+                        <button type="button" class="btn btn-outline-danger" ng-click="vm.removeExtra($index)">
+                            &times;
+                        </button>
                     </td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="6" class="text-right">
-                        <button type="button" class="btn btn-outline-secondary">Add extra</button>
+                        <button type="button" class="btn btn-outline-secondary" ng-click="vm.addExtra()">
+                            Add extra
+                        </button>
                     </td>
                 </tr>
             </tfoot>
         </table>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-primary">Save to memory</button>
+        <button type="submit" class="btn btn-primary">Save to memory</button>
         <button type="button" class="btn btn-outline-secondary" ng-click="$dismiss()">Cancel</button>
     </div>
 </form>

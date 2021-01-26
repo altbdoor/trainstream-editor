@@ -29,7 +29,7 @@ angular
     //     return instance;
     // })
     .controller('EditController', EditController)
-    .controller('EntryController', EntryController)
+    .controller('StreamController', StreamController)
     .run(function ($rootScope) {
         const glob = JSON.parse(document.querySelector('#glob-data').innerHTML);
 
