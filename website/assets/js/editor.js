@@ -48,7 +48,7 @@ function EditorController($http, $rootScope, $uibModal) {
             .then((sha) =>
                 $http.get(
                     `https://api.github.com/repos/${$rootScope.repository}/contents/${$rootScope.streamFilePath}?ref=${sha}`,
-                    { headers: { ...defaultHeaders } }
+                    { headers: { Accept: 'application/vnd.github.v3.raw' } }
                 )
             )
             .then((data) => {
