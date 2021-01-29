@@ -1,9 +1,14 @@
-function EditController($http, $rootScope, $uibModal) {
+const defaultHeaders = {
+    Accept: 'application/vnd.github.v3+json',
+};
+
+function EditorController($http, $rootScope, $uibModal) {
     const vm = this;
     vm.streamList = [];
 
     vm.reloadStreams = reloadStreams;
     vm.openEditor = openEditor;
+    vm.confirmSave = confirmSave;
 
     function openEditor(editStream, editStreamIndex) {
         $uibModal
@@ -12,7 +17,7 @@ function EditController($http, $rootScope, $uibModal) {
                 controllerAs: 'vm',
                 templateUrl: 'assets/template/stream-edit.html',
                 size: 'lg',
-                resolve: { stream: angular.copy(editStream) },
+                resolve: { stream: () => angular.copy(editStream) },
             })
             .result.then(
                 (newStream) => {
@@ -31,11 +36,56 @@ function EditController($http, $rootScope, $uibModal) {
     function reloadStreams() {
         vm.streamList = [];
 
-        $http.get(`https://cdn.jsdelivr.net/gh/${$rootScope.repository}/${$rootScope.streamFilePath}`).then((data) => {
-            vm.streamList = data.data.data;
-        });
+        const apiUrl = new URL(`https://api.github.com/repos/${$rootScope.repository}/commits`);
+        apiUrl.searchParams.append('path', $rootScope.streamFilePath);
+        apiUrl.searchParams.append('per_page', 1);
+
+        $http
+            .get(apiUrl.toString(), {
+                headers: { ...defaultHeaders },
+            })
+            .then((data) => data.data[0].sha)
+            .then((sha) =>
+                $http.get(
+                    `https://api.github.com/repos/${$rootScope.repository}/contents/${$rootScope.streamFilePath}?ref=${sha}`,
+                    { headers: { ...defaultHeaders } }
+                )
+            )
+            .then((data) => {
+                vm.streamList = data.data.data;
+            });
     }
     reloadStreams();
+
+    function confirmSave(streamList) {
+        let jsonData = JSON.stringify(
+            {
+                $schema: './stream_definitions.json',
+                data: [...streamList],
+            },
+            null,
+            4
+        );
+        jsonData = Base64.encode(jsonData);
+
+        $uibModal
+            .open({
+                controller: 'ConfirmController',
+                controllerAs: 'vm',
+                templateUrl: 'assets/template/confirm.html',
+                resolve: { jsonData: () => jsonData },
+                backdrop: 'static',
+                keyboard: false,
+            })
+            .result.then(
+                (isSaved) => {
+                    if (isSaved) {
+                        reloadStreams();
+                    }
+                },
+                () => {}
+            );
+    }
 }
 
 function StreamController(stream, $http, $rootScope, $scope) {
@@ -45,7 +95,7 @@ function StreamController(stream, $http, $rootScope, $scope) {
     vm.pictureSuggestions = [];
     $http
         .get(`https://api.github.com/repos/${$rootScope.repository}/contents/pictures`, {
-            headers: { Accept: 'application/vnd.github.v3+json' },
+            headers: { ...defaultHeaders },
         })
         .then((data) => {
             vm.pictureSuggestions = data.data.map((item) => `/${item.path}`);
@@ -86,5 +136,48 @@ function StreamController(stream, $http, $rootScope, $scope) {
 
     function removeExtra(removedIndex) {
         vm.stream.extras = vm.stream.extras.filter((_, index) => index !== removedIndex);
+    }
+}
+
+function ConfirmController(jsonData, $scope, $http, $rootScope) {
+    const vm = this;
+    vm.isProcessing = false;
+    vm.hasError = false;
+    vm.errorData = '';
+
+    vm.processData = processData;
+
+    function processData() {
+        vm.isProcessing = true;
+        const filePath = $rootScope.streamFilePath;
+        const urlPath = `https://api.github.com/repos/${$rootScope.repository}/contents/${filePath}`;
+
+        $http
+            .get(urlPath, { headers: { ...defaultHeaders } })
+            .then((data) => data.data.sha)
+            .then((sha) =>
+                $http.put(
+                    urlPath,
+                    {
+                        path: filePath,
+                        message: `Updating streams.json on ${new Date().toISOString()}`,
+                        content: jsonData,
+                        sha,
+                    },
+                    {
+                        headers: {
+                            ...defaultHeaders,
+                            Authorization: `token ${localStorage.getItem('gh-token')}`,
+                        },
+                    }
+                )
+            )
+            .then(() => $scope.$close(true))
+            .catch((err) => {
+                vm.hasError = true;
+                vm.errorData = err;
+                console.error(err);
+            })
+            .finally(() => (vm.isProcessing = false));
     }
 }

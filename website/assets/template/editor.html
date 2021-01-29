@@ -1,4 +1,4 @@
-<div class="container py-3" ng-controller="EditController as vm">
+<div class="container py-3" ng-controller="EditorController as vm">
     <div class="text-right mb-3">
         <a
             class="btn btn-outline-secondary"
@@ -9,7 +9,9 @@
         </a>
         <button type="button" class="btn btn-outline-secondary" ng-click="vm.reloadStreams()">Reload entries</button>
         <button type="button" class="btn btn-secondary" ng-click="vm.openEditor(undefined, -1)">Add new stream</button>
-        <button type="button" class="btn btn-primary">Save changes to GitHub</button>
+        <button type="button" class="btn btn-primary" ng-click="vm.confirmSave(vm.streamList)">
+            Save changes to GitHub
+        </button>
     </div>
 
     <table class="table table-sm table-bordered table-striped">
