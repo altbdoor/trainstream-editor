@@ -28,12 +28,12 @@ function EditorController($http, $rootScope, $uibModal) {
                                 headers: { ...defaultHeaders },
                             })
                             .then((data) => data.data.map((item) => `/${item.path}`)),
-                    fullTagList: () =>
-                        $http
-                            .get(`${contentUrl}/_data/tags.json?ref=${latestHash}`, {
-                                headers: { Accept: 'application/vnd.github.v3.raw' },
-                            })
-                            .then((data) => data.data.filter((tag) => tag.slug !== 'all')),
+                    fullTagList: () => [],
+                    // $http
+                    //     .get(`${contentUrl}/_data/tags.json?ref=${latestHash}`, {
+                    //         headers: { Accept: 'application/vnd.github.v3.raw' },
+                    //     })
+                    //     .then((data) => data.data.filter((tag) => tag.slug !== 'all')),
                 },
             })
             .result.then(
@@ -110,7 +110,7 @@ function StreamController(stream, pictureSuggestions, fullTagList, $scope) {
     vm.isEdit = !!stream;
 
     vm.pictureSuggestions = [...pictureSuggestions];
-    vm.fullTagList = [...fullTagList];
+    // vm.fullTagList = [...fullTagList];
 
     vm.stream = stream || {
         isAlive: true,
