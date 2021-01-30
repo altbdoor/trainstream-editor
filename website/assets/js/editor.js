@@ -30,7 +30,7 @@ function EditorController($http, $rootScope, $uibModal) {
                             .then((data) => data.data.map((item) => `/${item.path}`)),
                     fullTagList: () =>
                         $http
-                            .get(`${contentUrl}/_data/tags.json/?ref=${latestHash}`, {
+                            .get(`${contentUrl}/_data/tags.json?ref=${latestHash}`, {
                                 headers: { Accept: 'application/vnd.github.v3.raw' },
                             })
                             .then((data) => data.data.filter((tag) => tag.slug !== 'all')),
