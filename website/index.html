@@ -6,5 +6,15 @@
     <div ng-if="$root.hasToken" ng-include="'assets/template/editor.html'"></div>
 </div>
 
+<hr />
+
+<ul class="list-inline small">
+    {% for item in site.data.footer_links %}
+    <li class="list-inline-item">
+        <a href="{{ item.link }}"> {{ item.text }} </a>
+    </li>
+    {% endfor %}
+</ul>
+
 <script src="assets/js/editor.js"></script>
 <script src="assets/js/main.js"></script>
