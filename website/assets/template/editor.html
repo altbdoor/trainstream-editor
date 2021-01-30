@@ -8,7 +8,9 @@
             Upload image
         </a>
         <button type="button" class="btn btn-outline-secondary" ng-click="vm.reloadStreams()">Reload entries</button>
-        <button type="button" class="btn btn-secondary" ng-click="vm.openEditor(undefined, -1)">Add new stream</button>
+        <button type="button" class="btn btn-secondary" ng-click="vm.openEditor(vm.latestHash, undefined, -1)">
+            Add new stream
+        </button>
         <button type="button" class="btn btn-primary" ng-click="vm.confirmSave(vm.streamList)">
             Save changes to GitHub
         </button>
@@ -36,7 +38,7 @@
                             class="mr-1 mt-1"
                         >
                             <img
-                                ng-src="//images.weserv.nl/?h=64&url=https://raw.githubusercontent.com/[[ $root.repository ]]/master[[ img.src ]]"
+                                ng-src="//images.weserv.nl/?h=64&url=https://raw.githubusercontent.com/[[ $root.repository ]]/[[ vm.latestHash ]][[ img.src ]]"
                                 height="64"
                             />
                         </a>
@@ -52,7 +54,13 @@
                     </span>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-primary" ng-click="vm.openEditor(stream, $index)">Edit</button>
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        ng-click="vm.openEditor(vm.latestHash, stream, $index)"
+                    >
+                        Edit
+                    </button>
                 </td>
             </tr>
         </tbody>

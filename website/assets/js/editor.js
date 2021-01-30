@@ -5,19 +5,36 @@ const defaultHeaders = {
 function EditorController($http, $rootScope, $uibModal) {
     const vm = this;
     vm.streamList = [];
+    vm.latestHash = '';
 
     vm.reloadStreams = reloadStreams;
     vm.openEditor = openEditor;
     vm.confirmSave = confirmSave;
 
-    function openEditor(editStream, editStreamIndex) {
+    function openEditor(latestHash, editStream, editStreamIndex) {
+        const contentUrl = `https://api.github.com/repos/${$rootScope.repository}/contents`;
+
         $uibModal
             .open({
                 controller: 'StreamController',
                 controllerAs: 'vm',
                 templateUrl: 'assets/template/stream-edit.html',
                 size: 'lg',
-                resolve: { stream: () => angular.copy(editStream) },
+                resolve: {
+                    stream: () => angular.copy(editStream),
+                    pictureSuggestions: () =>
+                        $http
+                            .get(`${contentUrl}/pictures?ref=${latestHash}`, {
+                                headers: { ...defaultHeaders },
+                            })
+                            .then((data) => data.data.map((item) => `/${item.path}`)),
+                    fullTagList: () =>
+                        $http
+                            .get(`${contentUrl}/_data/tags.json/?ref=${latestHash}`, {
+                                headers: { Accept: 'application/vnd.github.v3.raw' },
+                            })
+                            .then((data) => data.data.filter((tag) => tag.slug !== 'all')),
+                },
             })
             .result.then(
                 (newStream) => {
@@ -36,15 +53,15 @@ function EditorController($http, $rootScope, $uibModal) {
     function reloadStreams() {
         vm.streamList = [];
 
-        const apiUrl = new URL(`https://api.github.com/repos/${$rootScope.repository}/commits`);
-        apiUrl.searchParams.append('path', $rootScope.streamFilePath);
-        apiUrl.searchParams.append('per_page', 1);
-
         $http
-            .get(apiUrl.toString(), {
-                headers: { ...defaultHeaders },
+            .get(`https://api.github.com/repos/${$rootScope.repository}/commits?per_page=1`, {
+                headers: { ...defaultHeaders, 'If-None-Match': '' },
             })
-            .then((data) => data.data[0].sha)
+            .then((data) => {
+                const sha = data.data[0].sha.substr(0, 7);
+                vm.latestHash = sha;
+                return sha;
+            })
             .then((sha) =>
                 $http.get(
                     `https://api.github.com/repos/${$rootScope.repository}/contents/${$rootScope.streamFilePath}?ref=${sha}`,
@@ -88,18 +105,12 @@ function EditorController($http, $rootScope, $uibModal) {
     }
 }
 
-function StreamController(stream, $http, $rootScope, $scope) {
+function StreamController(stream, pictureSuggestions, fullTagList, $scope) {
     const vm = this;
     vm.isEdit = !!stream;
 
-    vm.pictureSuggestions = [];
-    $http
-        .get(`https://api.github.com/repos/${$rootScope.repository}/contents/pictures`, {
-            headers: { ...defaultHeaders },
-        })
-        .then((data) => {
-            vm.pictureSuggestions = data.data.map((item) => `/${item.path}`);
-        });
+    vm.pictureSuggestions = [...pictureSuggestions];
+    vm.fullTagList = [...fullTagList];
 
     vm.stream = stream || {
         isAlive: true,
@@ -139,7 +150,7 @@ function StreamController(stream, $http, $rootScope, $scope) {
     }
 }
 
-function ConfirmController(jsonData, $scope, $http, $rootScope) {
+function ConfirmController(jsonData, $scope, $http, $rootScope, $timeout) {
     const vm = this;
     vm.isProcessing = false;
     vm.hasError = false;
@@ -172,6 +183,7 @@ function ConfirmController(jsonData, $scope, $http, $rootScope) {
                     }
                 )
             )
+            .then(() => $timeout(2000))
             .then(() => $scope.$close(true))
             .catch((err) => {
                 vm.hasError = true;

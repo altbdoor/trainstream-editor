@@ -3,7 +3,7 @@
     "scripts": {
         "start": "cd auth && wrangler dev",
         "deploy": "cd auth && wrangler publish",
-        "pretty": "prettier --write ./auth/*.{json,js} ./website/*.html ./website/assets/**/*.{js,html}"
+        "pretty": "prettier --write ./auth/*.{json,js} ./website/*.html ./website/assets/**/!(*.min).{js,html}"
     },
     "dependencies": {
         "prettier": "^2.2.1"
