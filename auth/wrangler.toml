@@ -4,4 +4,4 @@ account_id = "d7748c611373afc02ae8bf874a791a2e"
 workers_dev = true
 route = ""
 zone_id = ""
-vars = { ENVIRONMENT = "dev", CORS_URL = "http://localhost:4000" }
+vars = { ENVIRONMENT = "dev", CORS_URL = "https://altbdoor.github.io" }

@@ -2,6 +2,7 @@ const corsHeaders = {
     'Access-Control-Allow-Origin': `${CORS_URL}`,
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
     'Access-Control-Max-Age': '86400',
+    Vary: 'Origin',
 };
 
 addEventListener('fetch', (event) => {
