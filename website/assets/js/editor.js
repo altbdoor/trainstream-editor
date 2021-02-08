@@ -43,7 +43,7 @@ function EditorController($http, $rootScope, $uibModal) {
                             index === editStreamIndex ? newStream : stream
                         );
                     } else {
-                        vm.streamList = [newStream, ...vm.streamList];
+                        vm.streamList = [...vm.streamList, newStream];
                     }
                 },
                 () => {}
