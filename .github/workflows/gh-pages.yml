@@ -2,7 +2,7 @@
 
 name: Build Jekyll pages into gh-pages branch
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -29,6 +29,7 @@ jobs:
           ruby-version: 2.7
 
       - name: generate gem file lock
+        working-directory: website
         run: |
           bundle lock
 
@@ -36,9 +37,9 @@ jobs:
         with:
           enable_cache: true
           jekyll_src: website
-          custom_opts: '--config _config.yml'
 
       - uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./_site
+          force_orphan: true
