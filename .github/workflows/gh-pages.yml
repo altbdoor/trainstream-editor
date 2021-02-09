@@ -28,6 +28,10 @@ jobs:
         with:
           ruby-version: 2.7
 
+      - name: generate gem file lock
+        run: |
+          bundle lock
+
       - uses: limjh16/jekyll-action-ts@v2
         with:
           enable_cache: true
