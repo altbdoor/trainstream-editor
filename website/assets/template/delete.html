@@ -1,0 +1,14 @@
+<div class="modal-header">
+    <h5 class="modal-title">Confirm delete</h5>
+</div>
+<div class="modal-body">
+    <p>Are you sure you want to delete this stream entry?</p>
+
+    <div class="alert alert-info">
+        Note that the changes will only be saved into GitHub, once you have clicked "Save changes to GitHub".
+    </div>
+</div>
+<div class="modal-footer" ng-if="!vm.isProcessing || vm.hasError">
+    <button type="button" class="btn btn-danger" ng-click="$close(true)">Delete in memory</button>
+    <button type="button" class="btn btn-outline-secondary" ng-click="$close(false)">Cancel</button>
+</div>

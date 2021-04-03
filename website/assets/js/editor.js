@@ -10,6 +10,7 @@ function EditorController($http, $rootScope, $uibModal) {
     vm.reloadStreams = reloadStreams;
     vm.openEditor = openEditor;
     vm.confirmSave = confirmSave;
+    vm.deleteStream = deleteStream;
 
     function openEditor(latestHash, editStream, editStreamIndex) {
         const contentUrl = `https://api.github.com/repos/${$rootScope.repository}/contents`;
@@ -98,6 +99,21 @@ function EditorController($http, $rootScope, $uibModal) {
                 (isSaved) => {
                     if (isSaved) {
                         reloadStreams();
+                    }
+                },
+                () => {}
+            );
+    }
+
+    function deleteStream(removeIndex) {
+        $uibModal
+            .open({
+                templateUrl: 'assets/template/delete.html',
+            })
+            .result.then(
+                (isConfirmed) => {
+                    if (isConfirmed) {
+                        vm.streamList = vm.streamList.filter((_, index) => index !== removeIndex);
                     }
                 },
                 () => {}

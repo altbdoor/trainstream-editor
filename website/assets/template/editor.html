@@ -54,13 +54,18 @@
                     </span>
                 </td>
                 <td>
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        ng-click="vm.openEditor(vm.latestHash, stream, $index)"
-                    >
-                        Edit
-                    </button>
+                    <div class="d-flex flex-column">
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            ng-click="vm.openEditor(vm.latestHash, stream, $index)"
+                        >
+                            Edit
+                        </button>
+                        <button type="button" class="btn btn-danger mt-1" ng-click="vm.deleteStream($index)">
+                            Delete
+                        </button>
+                    </div>
                 </td>
             </tr>
         </tbody>
