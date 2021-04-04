@@ -13,5 +13,8 @@
 - link: https://github.com/dankogai/js-base64
   text: js-base64
 
+- link: https://github.com/mbenford/ngTagsInput
+  text: ngTagsInput
+
 - link: ./about.html
   text: About

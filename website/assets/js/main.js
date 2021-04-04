@@ -1,5 +1,5 @@
 angular
-    .module('editApp', ['ui.bootstrap'])
+    .module('editApp', ['ui.bootstrap', 'ngTagsInput'])
     .config(($compileProvider, $interpolateProvider) => {
         $compileProvider.debugInfoEnabled(false);
         $compileProvider.commentDirectivesEnabled(false);

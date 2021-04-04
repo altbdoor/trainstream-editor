@@ -29,12 +29,12 @@ function EditorController($http, $rootScope, $uibModal) {
                                 headers: { ...defaultHeaders },
                             })
                             .then((data) => data.data.map((item) => `/${item.path}`)),
-                    fullTagList: () => [],
-                    // $http
-                    //     .get(`${contentUrl}/_data/tags.json?ref=${latestHash}`, {
-                    //         headers: { Accept: 'application/vnd.github.v3.raw' },
-                    //     })
-                    //     .then((data) => data.data.filter((tag) => tag.slug !== 'all')),
+                    fullTagList: () =>
+                        $http
+                            .get(`${contentUrl}/_data/tags.json?ref=${latestHash}`, {
+                                headers: { Accept: 'application/vnd.github.v3.raw' },
+                            })
+                            .then((data) => data.data.map((tag) => tag.slug).filter((slug) => slug !== 'all')),
                 },
             })
             .result.then(
@@ -126,13 +126,20 @@ function StreamController(stream, pictureSuggestions, fullTagList, $scope) {
     vm.isEdit = !!stream;
 
     vm.pictureSuggestions = [...pictureSuggestions];
-    // vm.fullTagList = [...fullTagList];
 
-    vm.stream = stream || {
-        isAlive: true,
-        images: [],
-        extras: [],
-    };
+    if (stream) {
+        vm.stream = {
+            ...stream,
+            tags: stream.tags ? stream.tags.split(',').map((tag) => ({ text: tag.trim() })) : [],
+        };
+    } else {
+        vm.stream = {
+            isAlive: true,
+            images: [],
+            extras: [],
+            tags: [],
+        };
+    }
 
     vm.addImage = addImage;
     vm.removeImage = removeImage;
@@ -140,13 +147,17 @@ function StreamController(stream, pictureSuggestions, fullTagList, $scope) {
     vm.removeExtra = removeExtra;
 
     vm.saveStream = saveStream;
+    vm.autoCompleteTag = autoCompleteTag;
 
     function saveStream(form, stream) {
         if (form.$invalid) {
             return;
         }
 
-        $scope.$close(stream);
+        $scope.$close({
+            ...stream,
+            tags: stream.tags.map((tag) => tag.text).join(', '),
+        });
     }
 
     function addImage() {
@@ -163,6 +174,10 @@ function StreamController(stream, pictureSuggestions, fullTagList, $scope) {
 
     function removeExtra(removedIndex) {
         vm.stream.extras = vm.stream.extras.filter((_, index) => index !== removedIndex);
+    }
+
+    function autoCompleteTag(query) {
+        return fullTagList.filter((tag) => tag.includes(query));
     }
 }
 

@@ -41,8 +41,21 @@
 
         <div class="form-group">
             <label for="">Tags</label>
-            <input type="text" class="form-control" ng-model="vm.stream.tags" />
-            <small class="form-text text-muted">Comma-separated list</small>
+            <tags-input name="tags" ng-model="vm.stream.tags" add-from-autocomplete-only="true">
+                <auto-complete source="vm.autoCompleteTag($query)" min-length="1"></auto-complete>
+            </tags-input>
+
+            <div ng-show="streamForm.tags.$invalid">
+                <small class="form-text text-danger">Invalid tag entry. Please only use the suggested tags.</small>
+            </div>
+            <small class="form-text text-muted">
+                If a new tag is needed, please edit the
+                <a
+                    href="https://github.com/TrainStream/trainstream.github.io/blob/master/_data/tags.json"
+                    target="_blank"
+                    >tags JSON file</a
+                >, and reload the editor. Sorry for the inconvenience.
+            </small>
         </div>
 
         <datalist id="image-suggest">

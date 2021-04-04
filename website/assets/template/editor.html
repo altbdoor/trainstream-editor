@@ -49,9 +49,14 @@
                     <span ng-show="!stream.isAlive" class="badge badge-danger">No</span>
                 </td>
                 <td>
-                    <span class="badge badge-secondary mr-1" ng-repeat="tag in stream.tags.split(',') track by $index">
-                        [[ tag ]]
-                    </span>
+                    <div ng-if="stream.tags">
+                        <span
+                            class="badge badge-secondary mr-1"
+                            ng-repeat="tag in stream.tags.split(',') track by $index"
+                        >
+                            [[ tag ]]
+                        </span>
+                    </div>
                 </td>
                 <td>
                     <div class="d-flex flex-column">
