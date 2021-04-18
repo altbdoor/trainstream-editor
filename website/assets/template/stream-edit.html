@@ -42,7 +42,12 @@
         <div class="form-group">
             <label for="">Tags</label>
             <tags-input name="tags" ng-model="vm.stream.tags" add-from-autocomplete-only="true">
-                <auto-complete source="vm.autoCompleteTag($query)" min-length="1"></auto-complete>
+                <auto-complete
+                    source="vm.autoCompleteTag($query)"
+                    min-length="1"
+                    load-on-empty="true"
+                    load-on-focus="true"
+                ></auto-complete>
             </tags-input>
 
             <div ng-show="streamForm.tags.$invalid">
@@ -54,7 +59,7 @@
                     href="https://github.com/TrainStream/trainstream.github.io/blob/master/_data/tags.json"
                     target="_blank"
                     >tags JSON file</a
-                >, and reload the editor. Sorry for the inconvenience.
+                >, and reload the editor.
             </small>
         </div>
 

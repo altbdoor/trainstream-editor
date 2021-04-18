@@ -177,7 +177,11 @@ function StreamController(stream, pictureSuggestions, fullTagList, $scope) {
     }
 
     function autoCompleteTag(query) {
-        return fullTagList.filter((tag) => tag.includes(query));
+        if (query) {
+            return fullTagList.filter((tag) => tag.includes(query));
+        }
+
+        return fullTagList;
     }
 }
 
