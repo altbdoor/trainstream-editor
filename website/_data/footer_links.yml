@@ -16,5 +16,8 @@
 - link: https://github.com/mbenford/ngTagsInput
   text: ngTagsInput
 
+- link: https://fontawesome.com/v4.7.0/
+  text: Icon from FontAwesome 4
+
 - link: ./about.html
   text: About
