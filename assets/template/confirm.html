@@ -1,0 +1,24 @@
+<div class="modal-header">
+    <h5 class="modal-title">Confirm save</h5>
+</div>
+<div class="modal-body">
+    <div ng-show="!vm.hasError">
+        <div ng-show="!vm.isProcessing">Are you sure?</div>
+        <div ng-show="vm.isProcessing">
+            Saving data into GitHub... This box will automatically close when it is done.
+        </div>
+    </div>
+    <div ng-show="vm.hasError">
+        <p>An error occured while processing your request!</p>
+        <pre><code>[[ vm.errorData | json ]]</code></pre>
+    </div>
+</div>
+<div class="modal-footer" ng-if="!vm.isProcessing || vm.hasError">
+    <div ng-show="!vm.hasError">
+        <button type="button" class="btn btn-primary" ng-click="vm.processData()">Yes, save to GitHub</button>
+        <button type="button" class="btn btn-outline-secondary" ng-click="$dismiss()">No, cancel this action</button>
+    </div>
+    <div ng-show="vm.hasError">
+        <button type="button" class="btn btn-outline-secondary" ng-click="$dismiss()">Close</button>
+    </div>
+</div>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>TrainStream editor</title>
+
+        <link rel="shortcut icon" href="assets/images/favicon.png">
+
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ng-tags-input@3.2.0/build/ng-tags-input.min.css" />
+
+        <script src="https://cdn.jsdelivr.net/npm/angular@1.8.2/angular.min.js"></script>
+        <script src="assets/js/ui-bootstrap-custom-tpls-3.0.6.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/js-base64@3.6.0/base64.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/ng-tags-input@3.2.0/build/ng-tags-input.min.js"></script>
+
+        <script id="glob-data" type="application/json">
+            {
+                "GITHUB_CLIENT_ID": "f0027cd1e5607d764686",
+                "GITHUB_REPOSITORY": "TrainStream/trainstream.github.io"
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container py-3"><div class="auth__loading text-center d-none">
+    <h3>Authenticating...</h3>
+    <p>Getting access token from GitHub... You will be redirected when it is done.</p>
+</div>
+
+<div class="auth__error d-none">
+    <div class="text-center">
+        <h3>Error</h3>
+        <p>
+            An error has occured during authentication! Please click
+            <a href="./">here</a> to try again.
+        </p>
+    </div>
+    <pre><code class="auth__error__content"></code></pre>
+</div>
+
+<div class="auth__default text-center">
+    <h3>You should not be here!</h3>
+    <p>Please click <a href="./">here</a> to begin.</p>
+</div>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.has('code')) {
+        document.querySelector('.auth__default').classList.add('d-none');
+        document.querySelector('.auth__loading').classList.remove('d-none');
+
+        const url = new URL('https://trainstream-editor.altbdoor-ed95b916.workers.dev');
+        url.searchParams.set('code', params.get('code'));
+        url.searchParams.set('client_id', 'f0027cd1e5607d764686');
+
+        fetch(url.toString())
+            .then((data) => data.json())
+            .then((data) => {
+                if (data.access_token) {
+                    localStorage.setItem('gh-token', data.access_token);
+                    localStorage.setItem('gh-token-expire', Date.now() + 30 * 24 * 60 * 60 * 1000);
+
+                    setTimeout(() => {
+                        window.location.href = './';
+                    }, 2000);
+                } else {
+                    document.querySelector('.auth__loading').classList.add('d-none');
+                    document.querySelector('.auth__error').classList.remove('d-none');
+                    document.querySelector('.auth__error__content').textContent = JSON.stringify(data, null, 4);
+                }
+            });
+    }
+</script>
+</div>
+    </body>
+</html>
