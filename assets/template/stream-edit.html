@@ -1,0 +1,159 @@
+<form name="streamForm" ng-submit="vm.saveStream(streamForm, vm.stream)">
+    <div class="modal-header">
+        <h5 class="modal-title">
+            <span ng-if="!vm.isEdit">New stream</span>
+            <span ng-if="vm.isEdit">Edit stream</span>
+        </h5>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label for="">Name <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" ng-model="vm.stream.name" required />
+        </div>
+        <div class="form-group">
+            <label for="">Is alive?</label>
+
+            <div>
+                <div class="custom-control custom-radio">
+                    <input
+                        class="custom-control-input"
+                        type="radio"
+                        name="streamIsAlive"
+                        id="streamIsAliveTrue"
+                        ng-model="vm.stream.isAlive"
+                        ng-value="true"
+                    />
+                    <label class="custom-control-label" for="streamIsAliveTrue">Yes</label>
+                </div>
+                <div class="custom-control custom-radio">
+                    <input
+                        class="custom-control-input"
+                        type="radio"
+                        name="streamIsAlive"
+                        id="streamIsAliveFalse"
+                        ng-model="vm.stream.isAlive"
+                        ng-value="false"
+                    />
+                    <label class="custom-control-label" for="streamIsAliveFalse">No</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="">Tags</label>
+            <tags-input name="tags" ng-model="vm.stream.tags" add-from-autocomplete-only="true">
+                <auto-complete
+                    source="vm.autoCompleteTag($query)"
+                    min-length="1"
+                    load-on-empty="true"
+                    load-on-focus="true"
+                    max-results-to-show="100"
+                ></auto-complete>
+            </tags-input>
+
+            <div ng-show="streamForm.tags.$invalid">
+                <small class="form-text text-danger">Invalid tag entry. Please only use the suggested tags.</small>
+            </div>
+            <small class="form-text text-muted">
+                If a new tag is needed, please edit the
+                <a
+                    href="https://github.com/TrainStream/trainstream.github.io/blob/master/_data/tags.json"
+                    target="_blank"
+                    >tags JSON file</a
+                >, and reload the editor.
+            </small>
+        </div>
+
+        <datalist id="image-suggest">
+            <option ng-repeat="item in vm.pictureSuggestions track by $index" value="[[ item ]]"></option>
+        </datalist>
+
+        <table class="table table-sm mt-4">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Image source <span class="text-danger">*</span></th>
+                    <th>Alt text</th>
+                    <th>Width <span class="text-danger">*</span></th>
+                    <th>Height <span class="text-danger">*</span></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="img in vm.stream.images track by $index">
+                    <td class="align-middle">[[ $index + 1 ]]</td>
+                    <td>
+                        <input type="text" class="form-control" list="image-suggest" ng-model="img.src" required />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="img.alt" />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" ng-model="img.width" required />
+                    </td>
+                    <td>
+                        <input type="number" class="form-control" ng-model="img.height" required />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger" ng-click="vm.removeImage($index)">
+                            &times;
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" class="text-right">
+                        <button type="button" class="btn btn-outline-secondary" ng-click="vm.addImage()">
+                            Add image
+                        </button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <table class="table table-sm mt-4">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Link URL</th>
+                    <th>Link title</th>
+                    <th>Text</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="ext in vm.stream.extras track by $index">
+                    <td class="align-middle">[[ $index + 1 ]]</td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="ext.link" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="ext.linkTitle" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" ng-model="ext.text" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger" ng-click="vm.removeExtra($index)">
+                            &times;
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" class="text-right">
+                        <button type="button" class="btn btn-outline-secondary" ng-click="vm.addExtra()">
+                            Add extra
+                        </button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save to memory</button>
+        <button type="button" class="btn btn-outline-secondary" ng-click="$dismiss()">Cancel</button>
+    </div>
+</form>

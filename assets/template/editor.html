@@ -1,0 +1,78 @@
+<div ng-controller="EditorController as vm">
+    <div class="text-right mb-3">
+        <a
+            class="btn btn-outline-secondary"
+            ng-href="https://github.com/[[ $root.repository ]]/upload/master/pictures"
+            target="_blank"
+        >
+            Upload image
+        </a>
+        <button type="button" class="btn btn-outline-secondary" ng-click="vm.reloadStreams()">Reload entries</button>
+        <button type="button" class="btn btn-secondary" ng-click="vm.openEditor(vm.latestHash, undefined, -1)">
+            Add new stream
+        </button>
+        <button type="button" class="btn btn-primary" ng-click="vm.confirmSave(vm.streamList)">
+            Save changes to GitHub
+        </button>
+    </div>
+
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th style="white-space: nowrap">Is Alive?</th>
+                <th>Tags</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="stream in vm.streamList track by $index">
+                <td>
+                    <div>[[ stream.name ]]</div>
+                    <div class="d-flex">
+                        <a
+                            ng-repeat="img in stream.images track by $index"
+                            ng-href="https://github.com/[[ $root.repository ]]/blob/master[[ img.src ]]"
+                            ng-attr-title="[[ img.title ]]"
+                            target="_blank"
+                            class="mr-1 mt-1"
+                        >
+                            <img
+                                ng-src="//images.weserv.nl/?h=64&url=https://raw.githubusercontent.com/[[ $root.repository ]]/master[[ img.src ]]"
+                                height="64"
+                            />
+                        </a>
+                    </div>
+                </td>
+                <td>
+                    <span ng-show="stream.isAlive" class="badge badge-success">Yes</span>
+                    <span ng-show="!stream.isAlive" class="badge badge-danger">No</span>
+                </td>
+                <td>
+                    <div ng-if="stream.tags">
+                        <span
+                            class="badge badge-secondary mr-1"
+                            ng-repeat="tag in stream.tags.split(',') track by $index"
+                        >
+                            [[ tag ]]
+                        </span>
+                    </div>
+                </td>
+                <td>
+                    <div class="d-flex flex-column">
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            ng-click="vm.openEditor(vm.latestHash, stream, $index)"
+                        >
+                            Edit
+                        </button>
+                        <button type="button" class="btn btn-danger mt-1" ng-click="vm.deleteStream($index)">
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
